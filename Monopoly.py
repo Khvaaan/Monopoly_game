@@ -86,9 +86,12 @@ def confirm():
 def calculate_deck(player):	# обновлённое место игрока лежит в хар-ке объета, так что ничего больше не передаём
 	""" обрабатывает перемещение по полю(улицы, штрафы, бонусы и пр.)"""
 	card = FIELD[player.position]
+
 	if (card.color != 0):	# если улица
 		if card.owner == None and card.owner != player.ID:
+
 			print("Вы можете купить эту карту (y/n): ", end = "")
+
 			if confirm():
 				# покупаем карту
 				player.balance -= card.b_price 	# сняли деньги за покупку
@@ -96,12 +99,16 @@ def calculate_deck(player):	# обновлённое место игрока л�
 				card.owner = player.ID
 				print("Вы купили эту карту!")
 				print("Ваш баланс:", player.balance)
+
 			else:
 				print("АУКЦИОН!")
+
 		elif card.owner == player.ID:
 			print("Это ВАШЕ поле!")
+
 		else:
 			print("Оплатите ренту игроку", players[card.owner-1].name)
+
 	else:
 		print("Возьмите карточку", card.name)
 
@@ -110,6 +117,7 @@ def player_move(player, value):
 	""" функция осуществляет изменение player.position na value"""
 	player.position = (player.position + value) % 40
 	print("Игрок", player.name, "перешёл на клетку", player.position, ":", FIELD[player.position].name)
+
 	calculate_deck(player)
 	return 0
 
@@ -118,7 +126,7 @@ def player_motion(player):
 	""" передаём в функцию объект класса Players() и делаем с ним всякое"""
 	print("\n\n-----------------------")
 	print(str(player.name), "делает ход!", "\n")
-	double = 0
+	double = 0	# не забудь про дубли!
 	value = dice()
 	if value[0] == value[1]:
 		double = 1
@@ -132,10 +140,11 @@ def main():
 	global players
 	players = create_players()
 	turn_player_number = who_start(players) + 1	# это НОМЕР игрока в списке
+	game_is_end = False
+
 	time.sleep(2)
-	print(players[0].ID)
-	print(players[1].ID)
-	while True:
+
+	while not(game_is_end):
 		player_motion(players[turn_player_number - 1])
 		turn_player_number = (turn_player_number + 1) % player_count
 		time.sleep(2)
